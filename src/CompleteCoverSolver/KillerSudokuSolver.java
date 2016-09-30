@@ -10,7 +10,7 @@ import java.util.ArrayList;
 //import java.util.HashSet;
 
 /**
- *
+ * extention of Sudoku solver to solve killer sudoku
  * @author Sam
  */
 public class KillerSudokuSolver extends SudokuSolver {

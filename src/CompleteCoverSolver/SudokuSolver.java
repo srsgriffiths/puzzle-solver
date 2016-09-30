@@ -8,14 +8,31 @@ package CompleteCoverSolver;
 import java.util.ArrayList;
 
 /**
- *
+ * implement sudoku solver by converting puzzle to a NodeMatrix representing
+ * a complete cover problem (ccp), solving this, then converting solutions back
+ * to sudoku puzzle
+ * 
+ * (see explanation of quantities 'size' and 'dims' below)
+ * the ccp genrated is structured:
+ * -has 4*number of cells in puzzle rows(dims)
+ * -first dims entries indicates which cell the row represents
+ * -next 2 dims entries indicate which row + entry(1..size of block-1) and column + entry
+ * so the first (size) entries from dims indicate row 0, next size entries indicate row 2
+ * and the entry 1..size indicates the number in that row/column
+ * -last dims entries indicate which block + entry 
+ * 
  * @author Sam
  */
 public class SudokuSolver extends CCSolver {
+    //represents sudoku puzzle read right to left top to bottom, 0 for empty cells
     protected byte[] spuzzle;
+    //list of solutions in same form as spuzzle, multiple solutions separated
+    //by null row
     protected ArrayList<byte[]> spuzzle_solutions = new ArrayList();
     // m,n are dims of whole puzzle, measuring block (ie normal = 3,3)
     //x,y are dims of blocks, ie normal puzzle = 3, 3
+    //dims is total number of cells
+    //size is number of cells per block
     protected int m, n, x, y, dims, size;
     
     
@@ -30,6 +47,13 @@ public class SudokuSolver extends CCSolver {
         dims = size*m*n;    
     }
     
+    /**
+     * converts spuzzle to a ccp NodeMatrix if spuzzle is initialized
+     * solves the ccp
+     * compiles solutions from path (see CCSolver) then converts to spuzzle form
+     * prints solutions numbered
+     * 
+     */
     @Override
     public void findSolutions(){
         if (spuzzle == null){
@@ -52,7 +76,11 @@ public class SudokuSolver extends CCSolver {
         }
         
     }
-    
+    /**
+     * prints solutions in spuzzle form to console, 
+     * multiple solutions separated by empty row
+     * each numbered
+     */
     @Override
     public void printSolutions(){
         if (spuzzle_solutions == null){
@@ -78,7 +106,11 @@ public class SudokuSolver extends CCSolver {
         
     }
    
-    
+    /**
+     * compiles soluions from path as in CCSolver then converts solutions
+     * to spuzzle form, and stores in spuzzle_solutions
+     * if multiple solutions, they're separated by a null row
+     */
     @Override
     protected void compileSolutions(){
         super.compileSolutions();
@@ -125,7 +157,16 @@ public class SudokuSolver extends CCSolver {
         //}            
         
     }
-    
+    /**
+     * Helper method of toCCProblem
+     * takes a spuzzle cell index, and entry (1..size-1) and returns corresponding
+     * ccp row
+     *
+     * see class documentation for structure
+     * @param index
+     * @param n
+     * @return 
+     */
     protected boolean[] makeCCProblemRow(int index, int n){
         //System.out.println("make row index = " + index);
         //System.out.println("make row n = " + n);
@@ -145,6 +186,12 @@ public class SudokuSolver extends CCSolver {
         return ret;
     }
     
+    /**
+     * converts spuzzle to a ccp in form of 2d boolean array, then passes this
+     * to NodeMatrix constructor to convert ccp to a NodeMatrix
+     * 
+     * for ccp row structure, see class documentation
+     */
     public void toCCProblem(){
         ArrayList<boolean[]> temparray = new ArrayList<>();
         
@@ -213,22 +260,36 @@ public class SudokuSolver extends CCSolver {
         ccproblem = new NodeMatrix(ret);
         
     }
-    
+    /**
+     * 
+     * @param i spuzzle index (0..dims-1)
+     * @return index of row of i (0...x*m-1)
+     */
     public int getRowIndex(int i){
         return (int) i/(size);
     }
     
+    /**
+     * 
+     * @param i spuzzle index (0..dims-1)
+     * @return index of column of i (0..y*n-1)
+     */
     public int getColumnIndex(int i){
         return i%(size);
     }
     
-    public int getBlockNumber(int k){
-        return ((int) getColumnIndex(k)/n) + ((int) getRowIndex(k)/m)*n;
+    /**
+     * 
+     * @param i spuzzle index (0..dims-1)
+     * @return index of block read right to left top to bottom (0... m*n-1)
+     */
+    public int getBlockNumber(int i){
+        return ((int) getColumnIndex(i)/n) + ((int) getRowIndex(i)/m)*n;
     }
     
     
     
-    
+    @Deprecated
     public byte[] getBlock(int i, int j){
         assert(i < m && j < n);
         
@@ -245,6 +306,7 @@ public class SudokuSolver extends CCSolver {
         return ret;
     }
     
+    @Deprecated
     public byte[] getRow(int i){
         byte[] ret = new byte[y*n];
         assert(i < m*x);
@@ -256,6 +318,7 @@ public class SudokuSolver extends CCSolver {
             
     }
     
+    @Deprecated
     public byte[] getColumn(int j){
         byte[] ret = new byte[m*x];
         assert(j < n*y);

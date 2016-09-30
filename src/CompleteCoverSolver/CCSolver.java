@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- *
+ * implements a complete cover problem (ccp) solver via Knuth's algorithm X
  * @author Sam
  */
 public class CCSolver {
     
     
-    
+    //ccp to be solved
     protected NodeMatrix ccproblem;
     
     
@@ -29,10 +29,11 @@ public class CCSolver {
     //path to solutions, incorrect path ends in null
     //consecutive nodes ending in root (no colname&&size == -1) is solution
     //two consectutive unused keys -> end
+    //placeholder indicates algorithm backtracking up a level
     protected HashMap<Integer, Node> path = new HashMap();
     //path counter
     protected int k = 0;
-    //
+    //node used to indicate algorithm backtracking in path 
     protected Node placeholder = new Node();
     
     public CCSolver() {};
@@ -40,7 +41,11 @@ public class CCSolver {
     public CCSolver(NodeMatrix ccproblem) {
         this.ccproblem = ccproblem;
     };
-     
+    
+    /**
+     * prints solutions to console each boolean separated by a space
+     * 
+     */
     public void printSolutions(){
         if (solutions == null){
             System.out.println("solutions list not initialized");
@@ -84,7 +89,12 @@ public class CCSolver {
 
     }
     
-    
+    /**
+     * converts solutions held in path into literal solutions with rows of booleans 
+     * representing solution rows
+     * 
+     * if multiple solutions, they're separated by a null row
+     */
     
     protected void compileSolutions(){
         solutions.clear();
@@ -130,7 +140,10 @@ public class CCSolver {
             //printSolutions(temp);
         }
     }
-    
+    /**
+     * solves ccproblem if initialized
+     * compiles solutions and prints each to console
+     */
     public void findSolutions(){
         if (ccproblem == null){
             //System.out.println("ccproblem not initialized");
@@ -142,6 +155,9 @@ public class CCSolver {
         
     }
     
+    /**
+     * solves ccproblem if initialized using Knuth's algorithm X
+     */
     protected void solve() {
         
         if (ccproblem.root.right == ccproblem.root){

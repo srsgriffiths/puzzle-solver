@@ -6,7 +6,8 @@
 package CompleteCoverSolver;
 
 /**
- *
+ * implements a doubly linked matrix of Nodes with a top line of indexed nodes - columnheader
+ * and root node at the start of the list of column headers
  * @author Sam
  */
 public class NodeMatrix {
@@ -17,6 +18,12 @@ public class NodeMatrix {
     public int n;
 
 
+    /**
+     * constructs doubly linked node array instance from a 2d boolean array
+     * a node is created in place of every true entry of 
+     * 
+     * @param inmat input 2d boolean array
+     */
     public NodeMatrix(boolean[][] inmat){
         m = inmat.length;
         n = inmat[0].length;
@@ -101,7 +108,7 @@ public class NodeMatrix {
     /**
      * returns column header with smallest size (the first it finds if multiple with same value
      * returns null if column in matrix with size zero
-     * @return
+     * @return column head with min entries or null
      */
     Node chooseColumn() {
         int min = m;
@@ -129,7 +136,10 @@ public class NodeMatrix {
 
     /**
      * Covers col c and all rows which have entry in c
-     * @param c
+     * un-links column c including its header and all rows with entries in c
+     * portion to be unlinked keeps it's linking
+     * 
+     * @param c header column to be covered
      */
     void coverColumn(Node c) {
         assert (c.size > -1);
@@ -148,7 +158,15 @@ public class NodeMatrix {
             }
         }
     }
-
+    
+    /**
+     * uncovers c and all rows with entries in c
+     * reverses coverColumn, if multiple cols covered, should be uncovered in reverse order,
+     * from last covered to first covered
+     * 
+     * @param c header of column to be uncovered
+     */
+    
     void uncoverColumn(Node c) {
         assert (c.size > -1);
         c.right.left = c;

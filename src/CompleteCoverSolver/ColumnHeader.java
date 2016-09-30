@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package CompleteCoverSolver;
 
 /**
- *
+ * represents first line of nodes in a doubly linked array used in manipulating columns in doubly linked array
  * @author Sam
  */
 public class ColumnHeader extends Node {
