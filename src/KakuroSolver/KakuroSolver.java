@@ -30,12 +30,12 @@ public class KakuroSolver {
     /**
      * stores indices of all non-empty headers in ?? order
      */
-    int[] headerlist;
+    ArrayList<Header> headerlist = new ArrayList<>();
     
     /**
      * stores indices of all entries in ?? order
      */
-    int[] entrylist;
+    ArrayList<Entry> entrylist = new ArrayList<>();
     
     NaturalSum sums;
  
@@ -62,35 +62,80 @@ public class KakuroSolver {
         
         kpuzzle = new Cell[hl.length];
         
-        //temperary entrylist, headerlist
-        ArrayList<Integer> temphl = new ArrayList<>(); 
-        ArrayList<Integer> tempel = new ArrayList<>();
-        
-        for (int i = 0 ; i < hl.length ; i ++){
+        for (int i = 0 ; i < hl.length ; i++){
             if (hl[i] == null){
-                kpuzzle[i] = new Entry(i);
-                tempel.add(i);
+                Entry e = new Entry(i);
+                kpuzzle[i] = e;
+                entrylist.add(e);
             } else if (hl[i].rowsum != 0 || hl[i].colsum != 0){
+                headerlist.add(hl[i]);
                 kpuzzle[i] = hl[i];
                 kpuzzle[i].index = i;
-                temphl.add(i);
+                
             }
         }
-        headerlist = temphl.parallelStream().mapToInt(i->i).toArray();
-        entrylist = tempel.parallelStream().mapToInt(i->i).toArray();
+        
+        setupKPuzzle();
+    }
+    
+    public void solve(){
         
     }
     
+    /**
+     * private method bundles setup methods for constructor
+     */
+    private void setupKPuzzle() {
+        setupRowColSize();
+        setHeaderPossibles();
+        setEntryPossibles();
+    }
     
-    public void setEntryPossibles(){
-        for (int i : entrylist){
-            System.out.println("Entry index i = " + i);
-            Entry e = (Entry) kpuzzle[i];
-            e.possibles = getIntersection(e.colhead.colpos, e.rowhead.rowpos);
-            System.out.println("Entry possibles: " + Arrays.toString(getIntersection(e.colhead.colpos, e.rowhead.rowpos).toArray()));
+    /**
+     * sets up each header row/colsize 
+     * 
+     * sets up each cell rowhead and colhead
+     */
+    public void setupRowColSize(){
+        for (Header h : headerlist){
+            //if (h.rowsize != 0){
+            h.rowsize = getRowSize(h);
+            //}
+            //if (h.colsize != 0){
+            h.colsize = getColSize(h);
+            //}
+            
         }
     }
     
+    /**
+     * sets row/colpos in each header in order of headerlist
+     */
+    public void setHeaderPossibles(){
+        for(Header h : headerlist){
+            //System.out.println("Header index i = " + i);
+            if (h.rowsum != 0){
+                h.rowpos = getPossibles(h.rowsum, h.rowsize);
+                //System.out.println("Header rowpos: " + Arrays.toString(getPossibles(h.rowsum, h.rowsize).toArray()));
+            }
+            if (h.colsum != 0){
+                h.colpos = getPossibles(h.colsum, h.colsize);
+                //System.out.println("Header colpos: " + Arrays.toString(getPossibles(h.colsum, h.colsize).toArray()));
+            }
+        }
+    }
+    
+    /**
+     * calculates and sets possibles for each entry in kpuzzle
+     */
+    public void setEntryPossibles(){
+        for (Entry e : entrylist){
+            //System.out.println("Entry index i = " + i);
+            e.possibles = getIntersection(e.colhead.colpos, e.rowhead.rowpos);
+            //System.out.println("Entry possibles: " + Arrays.toString(getIntersection(e.colhead.colpos, e.rowhead.rowpos).toArray()));
+        }
+    }
+       
     /**
      * returns intersection of two HashSet containing bytes
      * @param s1 Hashset to be compared
@@ -196,23 +241,6 @@ public class KakuroSolver {
     }
     
     /**
-     * sets up each header row/colsize 
-     */
-    public void setupRowColSize(){
-        for (int i : headerlist){
-            assert(kpuzzle[i] instanceof Header);
-            Header h = (Header) kpuzzle[i];
-            //if (h.rowsize != 0){
-            h.rowsize = getRowSize(h);
-            //}
-            //if (h.colsize != 0){
-            h.colsize = getColSize(h);
-            //}
-            
-        }
-    }
-    
-    /**
      * returns rowsize of h if exists, or calculates and returns otherwise
      * 
      * sets up Entry rowheads
@@ -273,24 +301,6 @@ public class KakuroSolver {
             //    return size;
             //}
             return size;
-        }
-    }
-    
-    /**
-     * sets row/colpos in each header in order of headerlist
-     */
-    public void setHeaderPossibles(){
-        for(int i : headerlist){
-            Header h = (Header) kpuzzle[i];
-            System.out.println("Header index i = " + i);
-            if (h.rowsum != 0){
-                h.rowpos = getPossibles(h.rowsum, h.rowsize);
-                System.out.println("Header rowpos: " + Arrays.toString(getPossibles(h.rowsum, h.rowsize).toArray()));
-            }
-            if (h.colsum != 0){
-                h.colpos = getPossibles(h.colsum, h.colsize);
-                System.out.println("Header colpos: " + Arrays.toString(getPossibles(h.colsum, h.colsize).toArray()));
-            }
         }
     }
 }
