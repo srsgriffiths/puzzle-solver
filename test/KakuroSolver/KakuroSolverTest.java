@@ -63,6 +63,10 @@ public class KakuroSolverTest {
         testks.setupRowColSize();
         testks.setHeaderPossibles();
         testks.setEntryPossibles();
+        testks.sortEntryList();
+        testks.sortHeaderRowList();
+        testks.sortHeaderColList();
+        testks.printPuzzle();
     }
 
 

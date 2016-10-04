@@ -6,6 +6,7 @@
 package KakuroSolver;
 
 import java.util.HashSet;
+
 /**
  *
  * @author Sam

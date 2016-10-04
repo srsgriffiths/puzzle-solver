@@ -11,6 +11,7 @@ import java.util.HashSet;
 //import java.lang.Byte;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Collections;
 
 /**
  *
@@ -28,12 +29,14 @@ public class KakuroSolver {
     Cell[] kpuzzle;
     
     /**
-     * stores indices of all non-empty headers in ?? order
+     * stores all non-empty headers in ?? order
      */
     ArrayList<Header> headerlist = new ArrayList<>();
+    ArrayList<Header> headerrowlist = new ArrayList<>();
+    ArrayList<Header> headercollist = new ArrayList<>();
     
     /**
-     * stores indices of all entries in ?? order
+     * stores indices of all entries with 2 or more possibles in ?? order
      */
     ArrayList<Entry> entrylist = new ArrayList<>();
     
@@ -71,7 +74,11 @@ public class KakuroSolver {
                 headerlist.add(hl[i]);
                 kpuzzle[i] = hl[i];
                 kpuzzle[i].index = i;
-                
+                if (hl[i].rowsum != 0){
+                    headerrowlist.add(hl[i]);
+                } else if (hl[i].colsum != 0){
+                    headercollist.add(hl[i]);
+                }
             }
         }
         
@@ -80,6 +87,33 @@ public class KakuroSolver {
     
     public void solve(){
         
+    }
+    
+    /**
+     * sorts entrylist into ascending order of possibles.size
+     * removes any with size 1
+     */
+    public void sortEntryList(){
+        Collections.sort(entrylist);
+        
+        Iterator<Entry> itr = entrylist.iterator();
+        while (itr.hasNext()){
+            Entry e = itr.next();
+            if (e.size == 1){
+                itr.remove();
+                System.out.println("Entry Removed");
+            } else {
+                break;
+            }
+        }
+    }
+    
+    public void sortHeaderRowList(){
+        Collections.sort(headerrowlist, new HeaderRowComparator());
+    }
+    
+    public void sortHeaderColList(){
+        Collections.sort(headercollist, new HeaderColComparator());        
     }
     
     /**
@@ -131,7 +165,7 @@ public class KakuroSolver {
     public void setEntryPossibles(){
         for (Entry e : entrylist){
             //System.out.println("Entry index i = " + i);
-            e.possibles = getIntersection(e.colhead.colpos, e.rowhead.rowpos);
+            e.setPossibles(getIntersection(e.colhead.colpos, e.rowhead.rowpos));
             //System.out.println("Entry possibles: " + Arrays.toString(getIntersection(e.colhead.colpos, e.rowhead.rowpos).toArray()));
         }
     }
@@ -180,7 +214,7 @@ public class KakuroSolver {
     public HashSet getPossibles(int sum, int size){
         //System.out.println("sum = " + sum + " size = " + size);
         if (!checkSumPossible(sum, size)){
-            //System.out.print("sum not possible");
+            System.out.print("sum not possible");
             return null;
         }
         HashSet<Byte> ret = new HashSet<>();
@@ -203,9 +237,9 @@ public class KakuroSolver {
         //}
             case 1:
                 //System.out.println("size = 1");
-                HashSet r = new HashSet();
-                r.add(sum);
-                return r;
+                //HashSet r = new HashSet();
+                ret.add((byte) sum);
+                return ret;
             default:
                 int lower = sums.getSum(size-1) + domain; // lower bound where whole domain possible
                 int upper = sums.getSum(domain, domain - (size - 1)) + 1; //upper bound
@@ -302,5 +336,25 @@ public class KakuroSolver {
             //}
             return size;
         }
+    }
+    
+    public void printPuzzle(){
+        
+        for (int i = 0 ; i < kpuzzle.length ; i++){
+            if (i%11 == 0){
+                System.out.println();
+            }
+            if (kpuzzle[i] instanceof Entry){
+                if (((Entry) kpuzzle[i]).possibles.size() == 1){
+                    System.out.print(((Entry) kpuzzle[i]).possibles.toArray()[0] + " ");
+                } else {
+                    System.out.print("_ ");
+                }
+                
+            } else {
+                System.out.print("H ");
+            }
+        }
+        System.out.println();
     }
 }

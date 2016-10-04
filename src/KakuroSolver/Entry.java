@@ -10,11 +10,28 @@ import java.util.HashSet;
  *
  * @author Sam
  */
-public class Entry extends Cell{
+public class Entry extends Cell implements Comparable<Entry>{
     HashSet possibles;
+    int size;
     Header colhead, rowhead;
     
     public Entry(int index){
         this.index = index;
+    }
+    
+    public void setPossibles(HashSet p){
+        possibles = p;
+        size = p.size();
+    }
+    
+    @Override
+    public int compareTo(Entry e){
+        if(size == e.size){
+            return 0;
+        } else if (size > e.size){
+            return 1;
+        } else {
+            return -1;
+        }
     }
 }
