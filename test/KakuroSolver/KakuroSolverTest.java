@@ -66,16 +66,26 @@ public class KakuroSolverTest {
         testks.sortEntryList();
         testks.sortHeaderRowList();
         testks.sortHeaderColList();
+        //for (Entry e : testks.entrylist){
+        //    System.out.println(e.size + " " + e.possibles.size());
+        //}
         testks.printPuzzle();
     }
 
 
     @Test
-    public void testGetPossibles() {
-        //System.out.println("getPossibles");
+    public void testGetPossibleSummands() {
+        System.out.println("getPossibleSummands");
         byte[][] testlist = {{4, 2}, {1, 3},
                             {5, 2}, {1,2, 3, 4},
                             {9, 2}, {1, 2,3, 4,5, 6, 7, 8},
+                            {16, 2}, {7, 9},
+                            {15, 2}, {6,7,8,9}, 
+                            {14, 2},{5,6,8,9},
+                            {45, 9}, {1, 2,3, 4, 5, 6,7, 8, 9},
+                            {40, 8}, {1,2,3,4,5,6,7,8,9},
+                            {36, 8}, {1,2,3,4,5,6,7,8},
+                            {4, 1}, {4},
                             {6, 3}, {1,2, 3},
                             {7, 3}, {1, 2, 4},
                             {8, 3}, {1, 2, 3, 4, 5},
@@ -93,8 +103,8 @@ public class KakuroSolverTest {
             //for (byte b :testlist[i+1]){
             //    e.add(b);
             //}
-            //byte[] r = testks.getPossibles((int) testlist[i][0], (int) testlist[i][1]);
-            HashSet<Byte> r = testks.getPossibles((int) testlist[i][0], (int) testlist[i][1]);
+            //byte[] r = testks.getPossibleSummands((int) testlist[i][0], (int) testlist[i][1]);
+            HashSet<Byte> r = testks.getPossibleSummands((int) testlist[i][0], (int) testlist[i][1]);
            
             int[] ra = r.parallelStream().mapToInt(k->k).toArray();
             
@@ -110,7 +120,7 @@ public class KakuroSolverTest {
             assertArrayEquals(e, b);
         }
     }
-
+/*
     @Test
     public void testSetupRowColSize() {
         System.out.println("setupRowColSize");
@@ -148,6 +158,6 @@ public class KakuroSolverTest {
         instance.setHeaderPossibles();
         fail("The test case is a prototype.");
     }
-    
+    */
     
 }

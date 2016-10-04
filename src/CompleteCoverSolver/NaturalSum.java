@@ -28,7 +28,12 @@ public class NaturalSum {
     
     //return series sum from b to a
     public int getSum(int a, int b){
-        return sums[a-1] - sums[b-1];
+        if (b == 0){
+            return getSum(a);
+        } else {
+            return sums[a-1] - sums[b-1];
+        }
+        
     }
     
 }

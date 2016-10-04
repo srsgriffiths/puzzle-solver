@@ -11,7 +11,7 @@ import java.util.HashSet;
  * @author Sam
  */
 public class Entry extends Cell implements Comparable<Entry>{
-    HashSet possibles;
+    HashSet<Byte> possibles;
     int size;
     Header colhead, rowhead;
     
@@ -23,7 +23,9 @@ public class Entry extends Cell implements Comparable<Entry>{
         possibles = p;
         size = p.size();
     }
+       
     
+        
     @Override
     public int compareTo(Entry e){
         if(size == e.size){

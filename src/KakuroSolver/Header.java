@@ -13,7 +13,7 @@ import java.util.HashSet;
  */
 public class Header extends Cell {
     public int rowsum, colsum, rowsize = -1, colsize = -1;
-    public HashSet rowpos, colpos;
+    public HashSet<Byte> rowpos, colpos;
     
     public Header(int index){
         this.index = index;
